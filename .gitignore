@@ -7,3 +7,6 @@
 
 build/
 .vscode/
+**/tmp/
+tools/**
+!tools/*.sh

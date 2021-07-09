@@ -35,6 +35,7 @@
 #
 
 SRCDIR = .
+BUILD_DIR = .
 EFI_TARGET = .
 
 VPATH = $(SRCDIR)
@@ -61,7 +62,7 @@ LOADLIBES	+= -lefi -lgnuefi
 LOADLIBES	+= $(LIBGCC)
 LOADLIBES	+= -T $(LDSCRIPT)
 
-TARGET_APPS = $(notdir $(EFI_TARGET))
+TARGET_APPS =$(EFI_TARGET)
 TARGET_BSDRIVERS =
 TARGET_RTDRIVERS =
 
@@ -89,7 +90,8 @@ CFLAGS += -Wno-error=unused-parameter -Wno-error=unused-variable
 CPPFLAGS += -I$(GNU_EFI)/inc
 
 all: $(TARGETS)
-	mv -f -t $(dir $(EFI_TARGET)) $^
+	@mkdir -p $(BUILD_DIR)
+	mv -f -t $(BUILD_DIR) $^
 
 clean:
 	rm -f $(TARGETS) *~ *.o *.so
