@@ -1,7 +1,11 @@
 OS_NAME = uefios
+
 export PATH := $(abspath tools/x86_64-elf-cross/bin):$(PATH)
+
 BUILD_DIR = $(abspath build)
 SOURCE_DIR = $(abspath src)
+DATA_DIR = $(abspath data)
+
 OVMF_BINARIES_DIR = ovmf-bins
 GNU_EFI_DIR = gnu-efi
 
@@ -15,6 +19,7 @@ EMU_BASE_FLAGS = -drive file=$(BUILD_DIR)/$(OS_NAME).img,format=raw \
 				-m 512M \
 				-cpu qemu64 \
 				-machine q35 \
+				-vga std \
 				-drive if=pflash,format=raw,unit=0,file="$(OVMF_BINARIES_DIR)/OVMF_CODE-pure-efi.fd",readonly=on \
 				-drive if=pflash,format=raw,unit=1,file="$(OVMF_BINARIES_DIR)/OVMF_VARS-pure-efi.fd" \
 				-net none
@@ -26,32 +31,34 @@ DBG_FLAGS = -ex "target remote localhost:1234" \
 			-ex "set disassemble-next-line on" \
 			-ex "set step-mode on"
 
+partial: build update-img
 
+all: init-img startup-nsh build-gnu-efi partial
 
-partial: build update_img	
+build: build-bootloader build-kernel
 
-all: build make_img
-
-build: build_bootloader build_kernel
-
-build_bootloader:
-	@mkdir -p $(BUILD_DIR)
+build-gnu-efi:
 	$(MAKE) -C $(GNU_EFI_DIR) all
+
+build-bootloader:
+	@mkdir -p $(BUILD_DIR)
 	$(MAKE) -C $(SOURCE_DIR)/bootloader EFI_TARGET=$(EFI_TARGET) BUILD_DIR=$(BUILD_DIR)/bootloader all
 
-build_kernel:
+build-kernel:
 	@mkdir -p $(BUILD_DIR)
 	$(MAKE) -C $(SOURCE_DIR)/kernel ELF_TARGET=$(ELF_TARGET) BUILD_DIR=$(BUILD_DIR)/kernel all
 
-make_img: init_img update_img
-
-update_img:
+update-img:
 	mformat -i $(BUILD_DIR)/$(OS_NAME).img -F ::
 	mmd -i $(BUILD_DIR)/$(OS_NAME).img ::/EFI
 	mmd -i $(BUILD_DIR)/$(OS_NAME).img ::/EFI/BOOT
+	mmd -i $(BUILD_DIR)/$(OS_NAME).img ::/DATA
 	mcopy -i $(BUILD_DIR)/$(OS_NAME).img $(BUILD_DIR)/bootloader/$(EFI_TARGET) ::/EFI/BOOT
+	mcopy -i $(BUILD_DIR)/$(OS_NAME).img $(BUILD_DIR)/bootloader/startup.nsh ::
+	mcopy -i $(BUILD_DIR)/$(OS_NAME).img $(BUILD_DIR)/kernel/$(ELF_TARGET) ::
 
-init_img:
+init-img:
+	@mkdir -p $(BUILD_DIR)
 	dd if=/dev/zero of=$(BUILD_DIR)/$(OS_NAME).img bs=512 count=93750
 
 run:
@@ -61,7 +68,72 @@ debug:
 	$(EMU) $(EMU_BASE_FLAGS) $(EMU_DBG_FLAGS) &
 	$(DBG) $(DBG_FLAGS)
 
-clean:
+clean-all: clean
 	$(MAKE) -C gnu-efi clean
-	rm -rf $(SOURCE_DIR)/**/*.o
 	rm -rf $(BUILD_DIR)
+
+clean:
+	rm -rf $(SOURCE_DIR)/**/*.o
+	rm -rf $(BUILD_DIR)/**/*.o
+	rm -rf $(BUILD_DIR)/**/*.so
+	rm -rf $(BUILD_DIR)/**/*.efi
+
+startup-nsh:
+	@mkdir -p $(BUILD_DIR)/bootloader
+	printf "@echo -off\n\
+	mode 80 25\n\
+	cls\n\
+	if exists .\EFI\BOOT\$(EFI_TARGET) then\n\
+		.\EFI\BOOT\$(EFI_TARGET)\n\
+		goto END\n\
+	endif\n\
+	if exists FS0:\EFI\BOOT\$(EFI_TARGET) then\n\
+		FS0:\n\
+		echo \"Found bootloader on FS0.\"\n\
+		EFI\BOOT\$(EFI_TARGET)\n\
+		goto END\n\
+	endif\n\
+	if exists FS1:\EFI\BOOT\$(EFI_TARGET) then\n\
+		FS1:\n\
+		echo \"Found bootloader on FS1.\"\n\
+		EFI\BOOT\$(EFI_TARGET)\n\
+		goto END\n\
+	endif\n\
+	if exists FS2:\EFI\BOOT\$(EFI_TARGET) then\n\
+		FS2:\n\
+		echo \"Found bootloader on FS2.\"\n\
+		EFI\BOOT\$(EFI_TARGET)\n\
+		goto END\n\
+	endif\n\
+	if exists FS3:\EFI\BOOT\$(EFI_TARGET) then\n\
+		FS3:\n\
+		echo \"Found bootloader on FS3.\"\n\
+		EFI\BOOT\$(EFI_TARGET)\n\
+		goto END\n\
+	endif\n\
+	if exists FS4:\EFI\BOOT\$(EFI_TARGET) then\n\
+		FS4:\n\
+		echo \"Found bootloader on FS4.\"\n\
+		EFI\BOOT\$(EFI_TARGET)\n\
+		goto END\n\
+	endif\n\
+	if exists FS5:\EFI\BOOT\$(EFI_TARGET) then\n\
+		FS5:\n\
+		echo \"Found bootloader on FS5.\"\n\
+		EFI\BOOT\$(EFI_TARGET)\n\
+		goto END\n\
+	endif\n\
+	if exists FS6:\EFI\BOOT\$(EFI_TARGET) then\n\
+		FS6:\n\
+		echo \"Found bootloader on FS6.\"\n\
+		EFI\BOOT\$(EFI_TARGET)\n\
+		goto END\n\
+	endif\n\
+	if exists FS7:\EFI\BOOT\$(EFI_TARGET) then\n\
+		FS7:\n\
+		echo \"Found bootloader on FS7.\"\n\
+		EFI\BOOT\$(EFI_TARGET)\n\
+		goto END\n\
+	endif\n\
+	echo \"Unable to find bootloader.\"\n\
+	:END" > $(BUILD_DIR)/bootloader/startup.nsh
