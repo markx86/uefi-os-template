@@ -1,6 +1,10 @@
 #!/bin/bash
 
-DEPS="build-essential binutils mtools qemu qemu-system-x86_64 gdb"
+DEPS="build-essential binutils mtools qemu gdb"
+
+if apt-cache show qemu-system-x86_64 > /dev/null; then
+    DEPS="$DEPS qemu-system-x86_64"
+fi
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 

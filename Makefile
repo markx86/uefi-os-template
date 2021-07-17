@@ -4,7 +4,7 @@ export PATH := $(abspath tools/x86_64-elf-cross/bin):$(PATH)
 
 BUILD_DIR = $(abspath build)
 SOURCE_DIR = $(abspath src)
-DATA_DIR = $(abspath data)
+DATA_DIR = $(abspath files)
 
 OVMF_BINARIES_DIR = ovmf-bins
 GNU_EFI_DIR = gnu-efi
@@ -16,13 +16,13 @@ EMU = qemu-system-x86_64
 DBG = gdb
 
 EMU_BASE_FLAGS = -drive file=$(BUILD_DIR)/$(OS_NAME).img,format=raw \
-				-m 512M \
+				-m 256M \
 				-cpu qemu64 \
-				-machine q35 \
 				-vga std \
 				-drive if=pflash,format=raw,unit=0,file="$(OVMF_BINARIES_DIR)/OVMF_CODE-pure-efi.fd",readonly=on \
 				-drive if=pflash,format=raw,unit=1,file="$(OVMF_BINARIES_DIR)/OVMF_VARS-pure-efi.fd" \
-				-net none
+				-net none \
+				-machine q35
 
 EMU_DBG_FLAGS = -s -d guest_errors,cpu_reset,int -no-reboot -no-shutdown
 
@@ -43,6 +43,7 @@ build-gnu-efi:
 build-bootloader:
 	@mkdir -p $(BUILD_DIR)
 	$(MAKE) -C $(SOURCE_DIR)/bootloader EFI_TARGET=$(EFI_TARGET) BUILD_DIR=$(BUILD_DIR)/bootloader all
+	$(MAKE) -C $(SOURCE_DIR)/bootloader EFI_TARGET=$(EFI_TARGET).debug BUILD_DIR=$(BUILD_DIR)/bootloader all
 
 build-kernel:
 	@mkdir -p $(BUILD_DIR)
@@ -52,10 +53,10 @@ update-img:
 	mformat -i $(BUILD_DIR)/$(OS_NAME).img -F ::
 	mmd -i $(BUILD_DIR)/$(OS_NAME).img ::/EFI
 	mmd -i $(BUILD_DIR)/$(OS_NAME).img ::/EFI/BOOT
-	mmd -i $(BUILD_DIR)/$(OS_NAME).img ::/DATA
 	mcopy -i $(BUILD_DIR)/$(OS_NAME).img $(BUILD_DIR)/bootloader/$(EFI_TARGET) ::/EFI/BOOT
 	mcopy -i $(BUILD_DIR)/$(OS_NAME).img $(BUILD_DIR)/bootloader/startup.nsh ::
 	mcopy -i $(BUILD_DIR)/$(OS_NAME).img $(BUILD_DIR)/kernel/$(ELF_TARGET) ::
+	mcopy -si $(BUILD_DIR)/$(OS_NAME).img $(DATA_DIR)/* ::
 
 init-img:
 	@mkdir -p $(BUILD_DIR)
@@ -77,6 +78,8 @@ clean:
 	rm -rf $(BUILD_DIR)/**/*.o
 	rm -rf $(BUILD_DIR)/**/*.so
 	rm -rf $(BUILD_DIR)/**/*.efi
+	rm -rf $(BUILD_DIR)/**/*.efi.debug
+	rm -rf $(BUILD_DIR)/**/*.elf
 
 startup-nsh:
 	@mkdir -p $(BUILD_DIR)/bootloader
