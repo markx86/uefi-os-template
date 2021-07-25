@@ -85,7 +85,7 @@ endif
 
 TARGETS = $(TARGET_APPS) $(TARGET_BSDRIVERS) $(TARGET_RTDRIVERS)
 
-CFLAGS += -Wno-error=unused-parameter -Wno-error=unused-variable
+CFLAGS += -g -Wno-error=unused-parameter -Wno-error=unused-variable
 
 CPPFLAGS += -I$(GNU_EFI)/inc
 

@@ -1,0 +1,12 @@
+export LIBGL_ALWAYS_INDIRECT=1
+export DISPLAY=127.0.0.53:0.0
+export PULSE_SERVER=tcp:127.0.0.53
+cd /vagrant
+export LIBGL_ALWAYS_INDIRECT=1
+export DISPLAY=127.0.0.53:0.0
+export PULSE_SERVER=tcp:127.0.0.53
+cd /vagrant
+export LIBGL_ALWAYS_INDIRECT=1
+export DISPLAY=127.0.0.53:0.0
+export PULSE_SERVER=tcp:127.0.0.53
+cd /vagrant
