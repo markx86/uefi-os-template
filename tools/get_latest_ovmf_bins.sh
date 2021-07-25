@@ -6,17 +6,21 @@ SUB_TARGET="pure-efi"
 WORKDIR="tmp"
 DESTDIR=$(realpath "../ovmf-bins")
 
-if ! command -v rpm2cpio
+if ! test $1 = "-y"
 then
-    echo "Could not find rpm2cpio. Would you like to install it?"
-    read -p "Do you want to proceed? [Y/N] > " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    if ! command -v rpm2cpio
     then
-        exit 1
+        echo "Could not find rpm2cpio. Would you like to install it?"
+        read -p "Do you want to proceed? [Y/N] > " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]
+        then
+            exit 1
+        fi
     fi
-    sudo apt-get install rpm2cpio
 fi
+
+sudo apt-get install $1 rpm2cpio
 
 mkdir -p "$DESTDIR"
 mkdir -p "$WORKDIR" && cd "$WORKDIR"
