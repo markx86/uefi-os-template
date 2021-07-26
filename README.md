@@ -16,6 +16,7 @@ This will clone the repository in a directory named `<project_name>` located in 
 
 ### Using Vagrant
 This template provides a Vagrant Ubuntu 20.04 LTS VM to use, in order to make the build environment consistant across all computers. The VM will automatically setup X11 redirection to the host, so if you have an XServer running on your host you should be able to run GUI applications (such as QEMU) from the virtual machine.  
+
 **Note:** as of right now this only works on Windows with [VcXsrv](https://sourceforge.net/projects/vcxsrv/) or [GWSL](https://opticos.github.io/gwsl/).  
   
 Before you get started make sure you have virtualization enabled.    
