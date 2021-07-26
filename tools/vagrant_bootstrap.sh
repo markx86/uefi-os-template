@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOME="/vagrant"
+HOME="/workspace"
 
 echo "IP=(\$(ip r | grep default))" >> /home/vagrant/.bashrc
 echo "export LIBGL_ALWAYS_INDIRECT=1" >> /home/vagrant/.bashrc

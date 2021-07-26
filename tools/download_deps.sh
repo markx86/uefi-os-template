@@ -1,9 +1,11 @@
 #!/bin/bash
 
-DEPS="build-essential binutils mtools qemu gdb"
+DEPS="build-essential binutils mtools qemu gdb rpm2cpio bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo gcc-multilib"
 
 if apt-cache show qemu-system-x86_64 > /dev/null; then
     DEPS="$DEPS qemu-system-x86_64"
+elif apt-cache show qemu-system-x86 > /dev/null; then
+    DEPS="$DEPS qemu-system-x86"
 fi
 
 if [[ $EUID -ne 0 ]]; then
