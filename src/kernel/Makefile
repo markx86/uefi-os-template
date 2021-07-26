@@ -11,7 +11,7 @@ LIBC_DIR = $(abspath $(SOURCE_DIR)/../libc)
 ELF_TARGET = kernel.elf
 
 C_SRCS = $(shell find $(SOURCE_DIR) -name '*.c') $(shell find $(LIBC_DIR) -name '*.c')
-C_HDRS = $(shell find $(SOURCE_DIR) -name '*.h') $(shell find $(LIBC_DIR) -name '*.h')
+#C_HDRS = $(shell find $(SOURCE_DIR) -name '*.h') $(shell find $(LIBC_DIR) -name '*.h')
 C_OBJS = $(patsubst $(SOURCE_DIR)%.c, $(BUILD_DIR)%.o, $(C_SRCS))
 
 ASM_SRCS = $(shell find $(SOURCE_DIR) -name '*.asm')
@@ -26,7 +26,7 @@ all: $(C_OBJS) $(ASM_OBJS)
 	@echo $(ASM_OBJS)
 	$(LD) $(LDFLAGS) -o $(BUILD_DIR)/$(ELF_TARGET) $(C_OBJS) $(ASM_OBJS)
 
-$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c $(C_HDRS)
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c #$(C_HDRS)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
