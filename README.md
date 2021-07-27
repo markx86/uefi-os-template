@@ -10,13 +10,20 @@ A W.I.P. template project for UEFI OS development.
 ### Downloading the template
 If you're using Github you can just create a new repository using this one as a template by clicking on the green button that says **'Use this template'**, located in the top right of the repository page.  
 Otherwise open your git client and clone this repository. If you're using a terminal you can just type:  
-```git clone --recurse-submodules https://github.com/SkrapeProjects/uefi-os-template.git <project_name>```  
+```
+git clone --recurse-submodules https://github.com/SkrapeProjects/uefi-os-template.git <project_name>
+```  
 This will clone the repository in a directory named `<project_name>` located in the same directory you ran the command.
 
 
 ### Using Vagrant
-This template provides a Vagrant Ubuntu 20.04 LTS VM to use, in order to make the build environment consistant across all computers. The VM will automatically setup X11 redirection to the host, so if you have an XServer running on your host you should be able to run GUI applications (such as QEMU) from the virtual machine.  
-**Note:** as of right now this only works on Windows with [VcXsrv](https://sourceforge.net/projects/vcxsrv/) or [GWSL](https://opticos.github.io/gwsl/).  
+This template provides a Vagrant Ubuntu 20.04 LTS VM to use, in order to make the build environment consistant across all computers. The VM will automatically setup X11 forwarding to the host, so if you have an XServer running on your host you should be able to run GUI applications (such as QEMU) from the virtual machine.  
+If you're a Windows user you'll need to install an XServer (such as [VcXsrv](https://sourceforge.net/projects/vcxsrv/) and [GWSL](https://opticos.github.io/gwsl/)) and disable the following features:
+- Virtual Machine Platform
+- Windows Hypervisor Platform
+- Hyper-V (if available)  
+
+**Note:** As of right now XServer redirection works only on Windows and Linux hosts.  
   
 Before you get started make sure you have virtualization enabled.    
 Head over to the [Vagrant](https://www.vagrantup.com/) website and download the appropriate version for your system.  
@@ -26,22 +33,27 @@ Head over to the [Vagrant](https://www.vagrantup.com/) website and download the 
 To start the VM type `vagrant up`.  
 The initial startup will take a while, since it will upgrade the system and download all of the required dependecies needed for building the project.  
 Once the VM is up and running type `vagrant ssh` to login.  
+You can also SSH manually into the machine; the address is `127.0.0.1:2222` or `localhost:2222`. The default username and password are both `vagrant`.  
+Your project directory will be mounted at `/workspace` and you should be dropped inside this directory automatically at login.  
 
-**Note:** you can also SSH manually into the machine; the address is `127.0.0.1:2222` or `localhost:2222`. The default username and password are both `vagrant`.  
-Your project directory will be mounted at `/workspace` and you should be dropped inside this directory automatically at login.
+**Note:** if you're using Linux as your host and want to use X11 forwarding, you'll need to run the following command to ssh into the VM:  
+```
+ssh -X -p 2222 vagrant@localhost
+```
 
 Once you're done working inside the VM you can type `logout` or `exit` to return to your host's terminal/console.  
 Finally type `vagrant halt` to shutdown the VM.  
 **Tip:** If you just need to restart your VM you can use `vagrant reload`.
 
 In the unlikely event your VM breaks type `vagrant destroy` to reset the VM.  
+
 **Note:** the next time you type `vagrant up` it will do all the initial setup once again, so don't worry if it takes a while.
 
 
 ### Setting up the build environment
 I provided scripts, stored in the `tools` directory, to automate some tasks. They're made for Ubuntu (they also work under Ubuntu WSL).  
 Here's a list of the, a brief explanation of what they do and the order they should be run in:
-1) `download_deps.sh` Downloads the required dependencies for building the project. Must be run as root. **Not needed if using Vagrant**.
+1) `download_deps.sh` Downloads the required dependencies for building the project. Must be run as root. **Not needed if using Vagrant on Windows and Linux**.
 2) `setup_toolchain.sh` Downloads and compiles binutils and gcc for `x86_64-elf` crosscompilation and installs them in `tools/x86_64-elf-cross`. May take a while to execute.
 3) `get_latest_ovmf_bins.sh` Downloads and extracts (in the `ovmf-bins` folder) the lastest precompiled OVMF firmware from https://www.kraxel.org/repos.
 
