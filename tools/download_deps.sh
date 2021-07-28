@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEPS="build-essential binutils mtools qemu gdb rpm2cpio bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo gcc-multilib"
+DEPS="build-essential binutils mtools qemu gdb rpm2cpio bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo gcc-multilib nasm"
 
 if apt-cache show qemu-system-x86_64 > /dev/null; then
     DEPS="$DEPS qemu-system-x86_64"
