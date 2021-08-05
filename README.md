@@ -23,7 +23,7 @@ If you're a Windows user you'll need to install an XServer (such as [VcXsrv](htt
 - Windows Hypervisor Platform
 - Hyper-V (if available)  
 
-**Note:** As of right now XServer redirection works only on Windows and Linux hosts.  
+**Note:** As of right now X11 forwarding works only on Windows and Linux hosts.  
   
 Before you get started make sure you have virtualization enabled.    
 Head over to the [Vagrant](https://www.vagrantup.com/) website and download the appropriate version for your system.  
@@ -53,7 +53,7 @@ In the unlikely event your VM breaks type `vagrant destroy` to reset the VM.
 ### Setting up the build environment
 I provided scripts, stored in the `tools` directory, to automate some tasks. They're made for Ubuntu (they also work under Ubuntu WSL).  
 Here's a list of the, a brief explanation of what they do and the order they should be run in:
-1) `download_deps.sh` Downloads the required dependencies for building the project. Must be run as root. **Not needed if using Vagrant on Windows and Linux**.
+1) `download_deps.sh` Downloads the required dependencies for building the project. Must be run as root. **Not needed if using Vagrant**.
 2) `setup_toolchain.sh` Downloads and compiles binutils and gcc for `x86_64-elf` crosscompilation and installs them in `tools/x86_64-elf-cross`. May take a while to execute.
 3) `get_latest_ovmf_bins.sh` Downloads and extracts (in the `ovmf-bins` folder) the lastest precompiled OVMF firmware from https://www.kraxel.org/repos.
 
@@ -67,7 +67,7 @@ The Makefile offers 2 clean options:
 - `make clean` Cleans all built objects, libraries, elfs and efi files in the build directory.
 - `make clean-all` Does what clean does but also cleans the `gnu-efi` project and completely removes the build directory. After running this command it's necessary to re-run `make all`.
 
-#### TL;DR
+#### In a more easy to read way
 From the root directory of your project, the following `make` targets are available:
 - `make all` Builds everything. Required after `make clean-all` and when building the project for the first time.
 - `make` Defaults to `make partial`. Only builds the bootloader and the kernel and updates the already existing image.
@@ -95,7 +95,7 @@ When running `make all`:
 9) Copy the kernel's elf file in the image's root.
 10) Copy all files and folders recursively from `files/` to the image's root.
 
-**Note:** the `startup.nsh` script contains the search path for the efi file. The script looks through all the drives detected up to `FS7` and checks for the efi executable. If the executable is found the script will execute it, otherwise the script will just quit.
+**Note:** the `startup.nsh` script contains the search path for the efi file. The script looks through all the drives detected up to `FS7` and checks for the efi executable in `FSX:\EFI\BOOT\`. If the executable is found the script will execute it, otherwise the script will just quit.
 
 ---
 
