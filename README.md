@@ -114,7 +114,7 @@ When running `make all` in the root directory:
 
 
 ### Tuning the main Makefile
-**Note:** all modifications are to be made in the main Makefile (see [overview](#overview-of-the-templatate-s-structure)).  
+**Note:** all modifications are to be made in the main Makefile (see [overview](#overview-of-the-templatates-structure)).  
 Available parameters:
 - `OS_NAME`: name of the image
 - `BUILD_DIR`: path of the build directory
