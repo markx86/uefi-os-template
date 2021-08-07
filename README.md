@@ -50,6 +50,24 @@ In the unlikely event your VM breaks type `vagrant destroy` to reset the VM.
 **Note:** the next time you type `vagrant up` it will do all the initial setup once again, so don't worry if it takes a while.
 
 
+### Overview of the templatate's structure
+```
+<project_name>      // Project root directory
+├── files           // Files to be copied to the root of the OS's image (there's a README inside)
+├── gnu-efi         // Development package for creating UEFI applications (do not touch)
+├── LICENSE         // Project's license (you're free to do whatever with it)
+├── Makefile        // Project's main Makefile (use only this one)
+├── ovmf-bins       // UEFI BIOS images (needed for QEMU)
+├── README.md       // Project's README (modify it to your heart's content)
+├── src             // Your OS's source code folder
+│   ├── bootloader  //    - Bootloader source code and Makefile
+│   ├── kernel      //    - Kernel source code and Makefile
+│   └── libc        //    - C library source code
+├── tools           // Scripts to setup the development environment (see below for more info)
+└── Vagrantfile     // File needed by Vagrant to setup the VM (you can delete this if you don't plan on using it)
+```
+
+
 ### Setting up the build environment
 I provided scripts, stored in the `tools` directory, to automate some tasks. They're made for Ubuntu (they also work under Ubuntu WSL).  
 Here's a list of the, a brief explanation of what they do and the order they should be run in:
@@ -75,14 +93,11 @@ From the root directory of your project, the following `make` targets are availa
 - `make clean-all` Clean `gnu-efi` project and completely deletes the build directory.
 
 
-### Tuning the Makefiles
-// TODO //
-
 ---
 
-## How the build system works
 
-When running `make all`:
+## How the build system works
+When running `make all` in the root directory:
 
 1) Create an empty image.
 2) Create `startup.nsh` script.
@@ -93,11 +108,38 @@ When running `make all`:
 7) Copy the bootloader's efi executable in the image's /EFI/BOOT folder.
 8) Copy the `startup.nsh` script in the image's root.
 9) Copy the kernel's elf file in the image's root.
-10) Copy all files and folders recursively from `files/` to the image's root.
+10) Copy all files and folders recursively from `files/` to the OS image's root.
 
 **Note:** the `startup.nsh` script contains the search path for the efi file. The script looks through all the drives detected up to `FS7` and checks for the efi executable in `FSX:\EFI\BOOT\`. If the executable is found the script will execute it, otherwise the script will just quit.
 
+
+### Tuning the main Makefile
+**Note:** all modifications are to be made in the main Makefile (see [overview](#overview-of-the-templatate-s-structure)).  
+Available parameters:
+- `OS_NAME`: name of the image
+- `BUILD_DIR`: path of the build directory
+- `SOURCE_DIR`: path of the source directory containing the kernel, bootloader and libc source directories
+- `DATA_DIR`: path of the directory containing the files that are to be copied inside the OS image
+- `OVMF_BINARIES_DIR`: path of the directory containing the UEFI BIOS images
+- `GNU_EFI_DIR`: path of the directory to the gnu-efi development package.
+- `EFI_TARGET`: has to be the name of your bootloader's main source file (default is `loader.efi` so the bootloader's main file is `loader.c`)
+- `ELF_TARGET`: name of your compiled kernel ELF file
+- `EMU`: emulator's executable
+- `DBG`: debugger's executable
+- `CC`: C compiler's executable
+- `AC`: assembly compiler's executable
+- `LD`: linker's executable
+- `LDS`: path to the linker script to use
+- `EMU_BASE_FLAGS`: emulator flags to be applied when testing the OS
+- `EMU_DBG_FLAGS`: emulator flags to be applied when debugging the OS
+- `DBG_FLAGS`: debugger's flags
+- `CFLAGS`: C compiler's flags
+- `ACFLAGS`: assembly compiler's flags
+- `LDFLAGS`: linker's flags
+
+
 ---
+
 
 ## Credits
 > **MadMark**: original creator.  

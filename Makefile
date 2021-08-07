@@ -1,6 +1,11 @@
-OS_NAME = uefios
-
 export PATH := $(abspath tools/x86_64-elf-cross/bin):$(PATH)
+
+
+
+
+
+
+OS_NAME = uefios
 
 BUILD_DIR = $(abspath build)
 SOURCE_DIR = $(abspath src)
@@ -14,6 +19,11 @@ ELF_TARGET = kernel.elf
 
 EMU = qemu-system-x86_64
 DBG = gdb
+CC = x86_64-elf-gcc
+AC = nasm
+LD = x86_64-elf-ld
+
+LDS = $(abspath src/kernel/Linker.ld)
 
 EMU_BASE_FLAGS = -drive file=$(BUILD_DIR)/$(OS_NAME).img,format=raw \
 				-m 256M \
@@ -31,6 +41,18 @@ DBG_FLAGS = -ex "target remote localhost:1234" \
 			-ex "set disassemble-next-line on" \
 			-ex "set step-mode on"
 
+CFLAGS = -ffreestanding -fshort-wchar -mno-red-zone -m64 -Wall -Werror -nostdlib -nostdinc \
+		-fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs
+
+ACFLAGS = -f elf64
+
+LDFLAGS = -T $(LDS) -static -Bsymbolic -nostdlib
+
+
+
+
+
+
 partial: build update-img
 
 all: init-img startup-nsh build-gnu-efi partial
@@ -47,7 +69,15 @@ build-bootloader:
 
 build-kernel:
 	@mkdir -p $(BUILD_DIR)
-	$(MAKE) -C $(SOURCE_DIR)/kernel ELF_TARGET=$(ELF_TARGET) BUILD_DIR=$(BUILD_DIR)/kernel all
+	$(MAKE) -C $(SOURCE_DIR)/kernel ELF_TARGET=$(ELF_TARGET) \
+									BUILD_DIR=$(BUILD_DIR)/kernel \
+									CC=$(CC) \
+									LD=$(LD) \
+									AC=$(AC) \
+									CFLAGS="$(CFLAGS)" \
+									LDFLAGS="$(LDFLAGS)" \
+									ACFLAGS="$(ACFLAGS)" \
+									all
 
 update-img:
 	mformat -i $(BUILD_DIR)/$(OS_NAME).img -F ::
