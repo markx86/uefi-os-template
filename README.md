@@ -86,6 +86,7 @@ After that a normal `make` will build only the bootloader and the kernel and upd
 The Makefile offers 2 clean options:
 - `make clean` Cleans all built objects, libraries, ELFs and EFI files in the build directory.
 - `make clean-all` Does what clean does but also cleans the `gnu-efi` project and completely removes the build directory. After running this command it's necessary to re-run `make all`.
+To run and debug the project you can use `make run` and `make debug` respectively.
 
 #### In a more easy to read way
 From the root directory of your project, the following `make` targets are available:
@@ -93,6 +94,8 @@ From the root directory of your project, the following `make` targets are availa
 - `make` Defaults to `make partial`. Only builds the bootloader and the kernel and updates the already existing image.
 - `make clean` Removes all built targets that end with *.o, *.elf, *.so, *.efi and *.efi.debug
 - `make clean-all` Clean `gnu-efi` project and completely deletes the build directory.
+- `make run` Runs OS in QEMU
+- `make debug` Runs OS in QEMU with GDB attached
 
 
 ---
