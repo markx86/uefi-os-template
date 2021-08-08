@@ -167,6 +167,17 @@ becomes
 EFI_STATUS Status = uefi_call_wrapper(BS->AllocatePool, 3, EfiLoaderData, sizeof(UINTN), (void **) &Buffer);
 ```
 
+#### ld: cannot find ...
+If the compilation fails with one of the following errors
+```
+ld: cannot find ../gnuefi/crt0-efi-x86_64.o: No such file or directory
+ld: cannot find -lgnuefi
+```
+ensure you're not using a `-j` argument when running `make all`.
+
+#### Linking fails even though everything should work
+If the linking fails with undefined references, try running `make clean-all && make all`. Sometimes make "gets out of sync" or doesn't actually recompile files. The command above forces make to recompile everything. If this doesn't work, then it's probably either your code or your linker script.
+
 
 ---
 
