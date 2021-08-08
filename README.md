@@ -2,6 +2,39 @@
 
 A W.I.P. template project for UEFI OS development.
 
+## Table of contents:
+- **[Overview of the template's structure](#overview-of-the-templates-structure)**
+- **[How to use](#how-to-use)**
+    - **[Downloading the template](#downloading-the-template)**
+    - **[Using Vagrant](#using-vagrant)**
+    - **[Setting up the build environment](#setting-up-the-build-environment)**
+    - **[Building and running the project](#building-and-running-the-project)**
+- **[How the build system works](#how-the-build-system-works)**
+    - **[Tuning the main Makefile](#tuning-the-main-makefile)**
+- **[Know issues](#know-issues)**
+- **[Credits](#credits)**
+
+
+---
+
+
+## Overview of the template's structure
+```
+<project_name>      // Project root directory
+├── files           // Files to be copied to the root of the OS's image (there's a README inside)
+├── gnu-efi         // Development package for creating UEFI applications (do not touch)
+├── LICENSE         // Project's license (you're free to do whatever with it)
+├── Makefile        // Project's main Makefile (use only this one)
+├── ovmf-bins       // UEFI BIOS images (needed for QEMU)
+├── README.md       // Project's README (modify it to your heart's content)
+├── src             // Your OS's source code folder
+│   ├── bootloader  //    - Bootloader source code and Makefile
+│   ├── kernel      //    - Kernel source code and Makefile
+│   └── libc        //    - C library source code
+├── tools           // Scripts to set up the development environment (see below for more info)
+└── Vagrantfile     // File needed by Vagrant to set up the VM (you can delete this if you don't plan on using it)
+```
+
 
 ---
 
@@ -50,24 +83,6 @@ Finally, type `vagrant halt` to shut down the VM.
 In the unlikely event your VM breaks type `vagrant destroy` to reset the VM.  
 
 **Note:** the next time you type `vagrant up` it will do all the initial set up once again, so don't worry if it takes a while.
-
-
-### Overview of the template's structure
-```
-<project_name>      // Project root directory
-├── files           // Files to be copied to the root of the OS's image (there's a README inside)
-├── gnu-efi         // Development package for creating UEFI applications (do not touch)
-├── LICENSE         // Project's license (you're free to do whatever with it)
-├── Makefile        // Project's main Makefile (use only this one)
-├── ovmf-bins       // UEFI BIOS images (needed for QEMU)
-├── README.md       // Project's README (modify it to your heart's content)
-├── src             // Your OS's source code folder
-│   ├── bootloader  //    - Bootloader source code and Makefile
-│   ├── kernel      //    - Kernel source code and Makefile
-│   └── libc        //    - C library source code
-├── tools           // Scripts to set up the development environment (see below for more info)
-└── Vagrantfile     // File needed by Vagrant to set up the VM (you can delete this if you don't plan on using it)
-```
 
 
 ### Setting up the build environment
@@ -120,7 +135,7 @@ When running `make all` in the root directory:
 
 
 ### Tuning the main Makefile
-**Note:** all modifications are to be made in the main Makefile (see [overview](#overview-of-the-templatates-structure)).  
+**Note:** all modifications are to be made in the main Makefile (see [overview](#overview-of-the-templates-structure)).  
 Available parameters:
 - `OS_NAME`: name of the image
 - `BUILD_DIR`: path of the build directory
