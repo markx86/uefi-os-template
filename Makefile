@@ -64,16 +64,16 @@ build-gnu-efi:
 
 build-bootloader:
 	@mkdir -p $(BUILD_DIR)
-	$(MAKE) -C $(SOURCE_DIR)/bootloader EFI_TARGET=$(EFI_TARGET) BUILD_DIR=$(BUILD_DIR)/bootloader all
-	$(MAKE) -C $(SOURCE_DIR)/bootloader EFI_TARGET=$(EFI_TARGET).debug BUILD_DIR=$(BUILD_DIR)/bootloader all
+	$(MAKE) -C $(SOURCE_DIR)/bootloader EFI_TARGET="$(EFI_TARGET)" BUILD_DIR="$(BUILD_DIR)/bootloader" all
+	$(MAKE) -C $(SOURCE_DIR)/bootloader EFI_TARGET="$(EFI_TARGET).debug" BUILD_DIR="$(BUILD_DIR)/bootloader" all
 
 build-kernel:
 	@mkdir -p $(BUILD_DIR)
-	$(MAKE) -C $(SOURCE_DIR)/kernel ELF_TARGET=$(ELF_TARGET) \
-									BUILD_DIR=$(BUILD_DIR)/kernel \
-									CC=$(CC) \
-									LD=$(LD) \
-									AC=$(AC) \
+	$(MAKE) -C $(SOURCE_DIR)/kernel ELF_TARGET="$(ELF_TARGET)" \
+									BUILD_DIR="$(BUILD_DIR)/kernel" \
+									CC="$(CC)" \
+									LD="$(LD)" \
+									AC="$(AC)" \
 									CFLAGS="$(CFLAGS)" \
 									LDFLAGS="$(LDFLAGS)" \
 									ACFLAGS="$(ACFLAGS)" \

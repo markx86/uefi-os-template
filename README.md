@@ -2,7 +2,9 @@
 
 A W.I.P. template project for UEFI OS development.
 
+
 ---
+
 
 ## How to use
 
@@ -97,6 +99,7 @@ From the root directory of your project, the following `make` targets are availa
 
 
 ## How the build system works
+
 When running `make all` in the root directory:
 
 1) Create an empty image.
@@ -126,16 +129,43 @@ Available parameters:
 - `ELF_TARGET`: name of your compiled kernel ELF file
 - `EMU`: emulator's executable
 - `DBG`: debugger's executable
-- `CC`: C compiler's executable
-- `AC`: assembly compiler's executable
-- `LD`: linker's executable
-- `LDS`: path to the linker script to use
+- `CC`: C compiler's executable (does not apply to bootloader)
+- `AC`: assembly compiler's executable (does not apply to bootloader)
+- `LD`: linker's executable (does not apply to bootloader)
+- `LDS`: path to the linker script to use (does not apply to bootloader)
 - `EMU_BASE_FLAGS`: emulator flags to be applied when testing the OS
 - `EMU_DBG_FLAGS`: emulator flags to be applied when debugging the OS
 - `DBG_FLAGS`: debugger's flags
-- `CFLAGS`: C compiler's flags
-- `ACFLAGS`: assembly compiler's flags
-- `LDFLAGS`: linker's flags
+- `CFLAGS`: C compiler's flags (does not apply to bootloader)
+- `ACFLAGS`: assembly compiler's flags (does not apply to bootloader)
+- `LDFLAGS`: linker's flags (does not apply to bootloader)
+
+
+---
+
+
+## Know issues
+
+#### Makefile can't find target/file/folder.
+Ensure that the path to the project folder and any of the files in it **do not contain spaces**.
+
+#### x86_64-elf-gcc/ld: command not found
+Check if the folder `tools/x86_64-elf-cross` exists in the project folder. If it doesn't, run `tools/setup_crosscompiler.sh` to build the default cross compiler. If you already have setup a cross compiler you want to use, ensure it's in the global path and is set in the main Makefile (more info [here](#tuning-the-main-makefile)).
+
+#### Cannot use any/some of the SystemTable's functions (system hangs)
+Try using `uefi_call_wrapper` to call those functions. The syntax is:
+```
+EFI_STATUS Status = uefi_call_wrapper(function, number_of_paramters, ...);
+```
+where `...` are the function's parameters.
+An example:
+```
+EFI_STATUS Status = SystemTable->BootServices->AllocatePool(EfiLoaderData, sizeof(UINTN), (void **) &Buffer);
+```
+becomes
+```
+EFI_STATUS Status = uefi_call_wrapper(BS->AllocatePool, 3, EfiLoaderData, sizeof(UINTN), (void **) &Buffer);
+```
 
 
 ---
