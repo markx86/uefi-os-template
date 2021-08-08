@@ -10,8 +10,8 @@ A W.I.P. template project for UEFI OS development.
 
 
 ### Downloading the template
-If you're using Github you can just create a new repository using this one as a template by clicking on the green button that says **'Use this template'**, located in the top right of the repository page.  
-Otherwise open your git client and clone this repository. If you're using a terminal you can just type:  
+If you're using GitHub you can just create a new repository using this one as a template by clicking on the green button that says **'Use this template'**, located in the top right of the repository page.  
+Otherwise, open your git client and clone this repository. If you're using a terminal you can just type:  
 ```
 git clone --recurse-submodules https://github.com/SkrapeProjects/uefi-os-template.git <project_name>
 ```  
@@ -19,7 +19,7 @@ This will clone the repository in a directory named `<project_name>` located in 
 
 
 ### Using Vagrant
-This template provides a Vagrant Ubuntu 20.04 LTS VM to use, in order to make the build environment consistent across all computers. The VM will automatically setup X11 forwarding to the host (check note under this paragraph), so if you have an XServer running on your host you should be able to run GUI applications (such as QEMU) from the virtual machine.  
+This template provides a Vagrant Ubuntu 20.04 LTS VM to use, in order to make the build environment consistent across all computers. The VM will automatically set up X11 forwarding to the host (check note under this paragraph), so if you have an XServer running on your host you should be able to run GUI applications (such as QEMU) from the virtual machine.  
 If you're a Windows user you'll need to install an XServer (such as [VcXsrv](https://sourceforge.net/projects/vcxsrv/) and [GWSL](https://opticos.github.io/gwsl/)) and disable the following features:
 - Virtual Machine Platform
 - Windows Hypervisor Platform
@@ -30,10 +30,10 @@ If you're a Windows user you'll need to install an XServer (such as [VcXsrv](htt
 Before you get started make sure you have virtualization enabled.    
 Head over to the [Vagrant](https://www.vagrantup.com/) website and download the appropriate version for your system.  
 
-**Note:** all the following commands are to be run in your terminal emulator or Windows console inside the project root directory or one of it's subdirectories.  
+**Note:** all the following commands are to be run in your terminal emulator or Windows console inside the project root directory or one of its subdirectories.  
 
 To start the VM type `vagrant up`.  
-The initial startup will take a while, since it will upgrade the system and download all of the required dependecies needed for building the project.  
+The initial startup will take a while, since it will upgrade the system and download all the required dependencies for building the project.  
 Once the VM is up and running type `vagrant ssh` to login.  
 You can also SSH manually into the machine; the address is `127.0.0.1:2222` or `localhost:2222`. The default username and password are both `vagrant`.  
 Your project directory will be mounted at `/workspace` and you should be dropped inside this directory automatically at login.  
@@ -44,15 +44,15 @@ ssh -X -p 2222 vagrant@localhost
 ```
 
 Once you're done working inside the VM you can type `logout` or `exit` to return to your host's terminal/console.  
-Finally type `vagrant halt` to shutdown the VM.  
+Finally, type `vagrant halt` to shut down the VM.  
 **Tip:** If you just need to restart your VM you can use `vagrant reload`.
 
 In the unlikely event your VM breaks type `vagrant destroy` to reset the VM.  
 
-**Note:** the next time you type `vagrant up` it will do all the initial setup once again, so don't worry if it takes a while.
+**Note:** the next time you type `vagrant up` it will do all the initial set up once again, so don't worry if it takes a while.
 
 
-### Overview of the templatate's structure
+### Overview of the template's structure
 ```
 <project_name>      // Project root directory
 ├── files           // Files to be copied to the root of the OS's image (there's a README inside)
@@ -65,17 +65,17 @@ In the unlikely event your VM breaks type `vagrant destroy` to reset the VM.
 │   ├── bootloader  //    - Bootloader source code and Makefile
 │   ├── kernel      //    - Kernel source code and Makefile
 │   └── libc        //    - C library source code
-├── tools           // Scripts to setup the development environment (see below for more info)
-└── Vagrantfile     // File needed by Vagrant to setup the VM (you can delete this if you don't plan on using it)
+├── tools           // Scripts to set up the development environment (see below for more info)
+└── Vagrantfile     // File needed by Vagrant to set up the VM (you can delete this if you don't plan on using it)
 ```
 
 
 ### Setting up the build environment
 I provided scripts, stored in the `tools` directory, to automate some tasks. They're made for Ubuntu (they also work under Ubuntu WSL).  
-Here's a list of the, a brief explanation of what they do and the order they should be run in:
+Here's a list of all the scripts, brief explanation of what they do and the order they should be run in:
 1) `download_deps.sh` Downloads the required dependencies for building the project. Must be run as root. **Not needed if using Vagrant**.
-2) `setup_crosscompiler.sh` Downloads and compiles binutils and gcc for `x86_64-elf` crosscompilation and installs them in `tools/x86_64-elf-cross`. May take a while to execute.
-3) `get_latest_ovmf_bins.sh` Downloads and extracts (in the `ovmf-bins` folder) the lastest precompiled OVMF firmware from https://www.kraxel.org/repos.
+2) `setup_crosscompiler.sh` Downloads and compiles BinUtils and GCC for `x86_64-elf` cross compilation and installs them in `tools/x86_64-elf-cross`. May take a while to execute.
+3) `get_latest_ovmf_bins.sh` Downloads and extracts (in the `ovmf-bins` folder) the latest precompiled OVMF firmware from https://www.kraxel.org/repos.
 
 
 ### Building and running the project
@@ -84,7 +84,7 @@ Here's a list of the, a brief explanation of what they do and the order they sho
 To build the project for the first time run `make all`, to build `gnu-efi` and the image.  
 After that a normal `make` will build only the bootloader and the kernel and update the image with the new files.
 The Makefile offers 2 clean options:
-- `make clean` Cleans all built objects, libraries, elfs and efi files in the build directory.
+- `make clean` Cleans all built objects, libraries, ELFs and EFI files in the build directory.
 - `make clean-all` Does what clean does but also cleans the `gnu-efi` project and completely removes the build directory. After running this command it's necessary to re-run `make all`.
 
 #### In a more easy to read way
@@ -106,14 +106,14 @@ When running `make all` in the root directory:
 2) Create `startup.nsh` script.
 3) Build `gnu-efi` submodule.
 4) Build the bootloader in `BUILD_DIR/bootloader`.
-5) Build the kernel and libc in `BUILD_DIR/kernel` and `BUILD_DIR/libc` respectively.
+5) Build the kernel and C library in `BUILD_DIR/kernel` and `BUILD_DIR/libc` respectively.
 6) Format the image as FAT32.
-7) Copy the bootloader's efi executable in the image's /EFI/BOOT folder.
+7) Copy the bootloader's EFI executable in the image's /EFI/BOOT folder.
 8) Copy the `startup.nsh` script in the image's root.
 9) Copy the kernel's elf file in the image's root.
 10) Copy all files and folders recursively from `files/` to the OS image's root.
 
-**Note:** the `startup.nsh` script contains the search path for the efi file. The script looks through all the drives detected up to `FS7` and checks for the efi executable in `FSX:\EFI\BOOT\`. If the executable is found the script will execute it, otherwise the script will just quit.
+**Note:** the `startup.nsh` script contains the search path for the EFI file. The script looks through all the drives detected up to `FS7` and checks for the EFI executable in `FSX:\EFI\BOOT\`. If the executable is found the script will execute it, otherwise the script will just quit.
 
 
 ### Tuning the main Makefile
@@ -124,7 +124,7 @@ Available parameters:
 - `SOURCE_DIR`: path of the source directory containing the kernel, bootloader and libc source directories
 - `DATA_DIR`: path of the directory containing the files that are to be copied inside the OS image
 - `OVMF_BINARIES_DIR`: path of the directory containing the UEFI BIOS images
-- `GNU_EFI_DIR`: path of the directory to the gnu-efi development package.
+- `GNU_EFI_DIR`: path of the directory to the GNU-EFI development package.
 - `EFI_TARGET`: has to be the name of your bootloader's main source file (default is `loader.efi` so the bootloader's main file is `loader.c`)
 - `ELF_TARGET`: name of your compiled kernel ELF file
 - `EMU`: emulator's executable
@@ -150,7 +150,7 @@ Available parameters:
 Ensure that the path to the project folder and any of the files in it **do not contain spaces**.
 
 #### x86_64-elf-gcc/ld: command not found
-Check if the folder `tools/x86_64-elf-cross` exists in the project folder. If it doesn't, run `tools/setup_crosscompiler.sh` to build the default cross compiler. If you already have setup a cross compiler you want to use, ensure it's in the global path and is set in the main Makefile (more info [here](#tuning-the-main-makefile)).
+Check if the folder `tools/x86_64-elf-cross` exists in the project folder. If it doesn't, run `tools/setup_crosscompiler.sh` to build the default cross-compiler. If you already have set up a cross-compiler you want to use, ensure it's in the global path and is set in the main Makefile (more info [here](#tuning-the-main-makefile)).
 
 #### Cannot use any/some of the SystemTable's functions (system hangs)
 Try using `uefi_call_wrapper` to call those functions. The syntax is:
@@ -184,4 +184,4 @@ If the linking fails with undefined references, try running `make clean-all && m
 
 ## Credits
 > **MadMark**: original creator.  
-> Github: [@SkrapeProjects](https://github.com/SkrapeProjects)
+> GitHub: [@SkrapeProjects](https://github.com/SkrapeProjects)
