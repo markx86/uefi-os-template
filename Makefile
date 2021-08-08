@@ -41,7 +41,7 @@ DBG_FLAGS = -ex "target remote localhost:1234" \
 			-ex "set disassemble-next-line on" \
 			-ex "set step-mode on"
 
-CFLAGS = -ffreestanding -fshort-wchar -mno-red-zone -m64 -Wall -Werror -nostdlib -nostdinc \
+CFLAGS = -g -ffreestanding -fshort-wchar -mno-red-zone -m64 -Wall -Werror -nostdlib -nostdinc \
 		-fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs
 
 ACFLAGS = -f elf64
@@ -104,12 +104,12 @@ clean-all: clean
 	rm -rf $(BUILD_DIR)
 
 clean:
-	rm -rf $(SOURCE_DIR)/**/*.o
-	rm -rf $(BUILD_DIR)/**/*.o
-	rm -rf $(BUILD_DIR)/**/*.so
-	rm -rf $(BUILD_DIR)/**/*.efi
-	rm -rf $(BUILD_DIR)/**/*.efi.debug
-	rm -rf $(BUILD_DIR)/**/*.elf
+	find $(SOURCE_DIR) -name "*.o" -type f -delete
+	find $(BUILD_DIR) -name "*.o" -type f -delete
+	find $(BUILD_DIR) -name "*.so" -type f -delete
+	find $(BUILD_DIR) -name "*.efi" -type f -delete
+	find $(BUILD_DIR) -name "*.efi.debug" -type f -delete
+	find $(BUILD_DIR) -name "*.elf" -type f -delete
 
 startup-nsh:
 	@mkdir -p $(BUILD_DIR)/bootloader
