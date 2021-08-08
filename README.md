@@ -74,7 +74,7 @@ In the unlikely event your VM breaks type `vagrant destroy` to reset the VM.
 I provided scripts, stored in the `tools` directory, to automate some tasks. They're made for Ubuntu (they also work under Ubuntu WSL).  
 Here's a list of the, a brief explanation of what they do and the order they should be run in:
 1) `download_deps.sh` Downloads the required dependencies for building the project. Must be run as root. **Not needed if using Vagrant**.
-2) `setup_toolchain.sh` Downloads and compiles binutils and gcc for `x86_64-elf` crosscompilation and installs them in `tools/x86_64-elf-cross`. May take a while to execute.
+2) `setup_crosscompiler.sh` Downloads and compiles binutils and gcc for `x86_64-elf` crosscompilation and installs them in `tools/x86_64-elf-cross`. May take a while to execute.
 3) `get_latest_ovmf_bins.sh` Downloads and extracts (in the `ovmf-bins` folder) the lastest precompiled OVMF firmware from https://www.kraxel.org/repos.
 
 
