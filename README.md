@@ -194,8 +194,13 @@ ld: cannot find -lgnuefi
 ensure you're not using a `-j` argument when running `make all`.
 
 #### Linking fails even though everything should work
-If the linking fails with undefined references, try running `make clean-all && make all`. Sometimes make "gets out of sync" or doesn't actually recompile files. The command above forces make to recompile everything. If this doesn't work, then it's probably either your code or your linker script.
+If the linking fails with undefined references, try running `make clean-all && make all`. Sometimes make "gets out of sync" or doesn't actually recompile files. The command above forces make to recompile everything. If this doesn't work, then it's probably either your code or your linker script. **Also check issue below**.
 
+#### Object files are not getting deleted
+Before [this](https://github.com/SkrapeProjects/uefi-os-template/commit/02d4534ed208cadba4fdfca1bb2f85a356261a14) commit, there was an error in the main Makefile that prevented all the *.o files from being deleted. Try updating the main Makefile and see if that fixes it.
+
+#### GDB can't find debugging symbols
+Before [this](https://github.com/SkrapeProjects/uefi-os-template/commit/02d4534ed208cadba4fdfca1bb2f85a356261a14) commit, there was a missing compiler flag in the main Makefile that prevented the inclusion of debugging symbols in the executable. To fix this either update the main Makefile or add the `-g` flag to the `CFLAGS` variable (check [this](#tuning-the-main-makefile) out).
 
 ---
 
