@@ -5,7 +5,7 @@ FTP_URL="https://ftp.gnu.org/gnu"
 GCC_VERSION="11.1.0"
 BINUTILS_VERSION="2.36.1"
 
-WORKDIR="tmp"
+WORKDIR="/tmp/osworkdir"
 BUILD_DIR="build"
 
 TARGET="x86_64-elf"
