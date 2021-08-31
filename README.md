@@ -73,7 +73,7 @@ Your project directory will be mounted at `/workspace` and you should be dropped
 
 **Note:** if you're using Linux as your host and want to use X11 forwarding, you'll need to run the following command to ssh into the VM:  
 ```
-ssh -X -p 2222 vagrant@localhost
+vagrant ssh -- -X
 ```
 
 Once you're done working inside the VM you can type `logout` or `exit` to return to your host's terminal/console.  
